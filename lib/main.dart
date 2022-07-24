@@ -30,23 +30,62 @@ class BodyListView extends StatelessWidget {
   }
 
   Widget _myListView() {
-    final List<String> items =
-        List<String>.generate(10000, (index) => 'Item $index');
+    final List<ListItem> items = List<ListItem>.generate(
+      10000,
+      (index) => index % 6 == 0
+          ? HeadingItem('Heading $index')
+          : MessageItem('Sender $index', 'Message body $index'),
+    );
 
     return ListView.builder(
       itemCount: items.length,
       itemBuilder: (context, index) {
-        return Card(
-          child: ListTile(
-            title: Text(items[index]),
+        final item = items[index];
+
+        if (item is HeadingItem) {
+          return ListTile(
+            title: Text(
+              item.heading,
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          );
+        } else if (item is MessageItem) {
+          return ListTile(
+            title: Text(item.sender),
+            subtitle: Text(item.sender),
             leading: const Icon(
               Icons.insert_photo,
               color: Colors.red,
             ),
             trailing: const Icon(Icons.keyboard_arrow_right),
-          ),
-        );
+          );
+        }
+
+        return const Text("something wrong");
+        // return Card(
+        //   child: ListTile(
+        //     title: Text(items[index]),
+        //     leading: const Icon(
+        //       Icons.insert_photo,
+        //       color: Colors.red,
+        //     ),
+        //     trailing: const Icon(Icons.keyboard_arrow_right),
+        //   ),
+        // );
       },
     );
   }
+}
+
+abstract class ListItem {}
+
+class MessageItem implements ListItem {
+  final String sender;
+  final String body;
+  MessageItem(this.sender, this.body);
+}
+
+class HeadingItem implements ListItem {
+  final String heading;
+  HeadingItem(this.heading);
 }
