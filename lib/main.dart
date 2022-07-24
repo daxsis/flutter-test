@@ -30,28 +30,23 @@ class BodyListView extends StatelessWidget {
   }
 
   Widget _myListView() {
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      // shrinkWrap: true, <-- too expensive because flutter has to recompute the whole list
-      // scrollDirection: Axis.horizontal,
-      // itemExtent: 300, // scroll axis size, will increase performance because flutter does need to calculate sizing
-      reverse: true,
-      children: const <Widget>[
-        ListTile(
-          title: Text("Sun"),
-          subtitle: Text("Today clear"),
-          leading: Icon(Icons.wb_sunny),
-          trailing: Icon(Icons.keyboard_arrow_right),
-        ),
-        ListTile(
-            title: Text("Cloudy"),
-            leading: Icon(Icons.wb_cloudy),
-            trailing: Icon(Icons.keyboard_arrow_right)),
-        ListTile(
-            title: Text("Snow"),
-            leading: Icon(Icons.ac_unit),
-            trailing: Icon(Icons.keyboard_arrow_right)),
-      ],
+    final List<String> items =
+        List<String>.generate(10000, (index) => 'Item $index');
+
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+            title: Text(items[index]),
+            leading: const Icon(
+              Icons.insert_photo,
+              color: Colors.red,
+            ),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+          ),
+        );
+      },
     );
   }
 }
