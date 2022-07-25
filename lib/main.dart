@@ -1,91 +1,196 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "List view",
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Building List view"),
           centerTitle: true,
+          title: const Text(
+            "Weather Forecast",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red.shade400,
+          shadowColor: Colors.transparent,
         ),
-        body: const BodyListView(),
+        backgroundColor: Colors.red.shade400,
+        body: _buildBody(),
       ),
     );
   }
+
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: <Widget>[
+            _searchBar(),
+            _divider(),
+            _locationName(),
+            _divider(),
+            _currentConditions(),
+            _divider(),
+            _currentConditionDetails(),
+            _divider(),
+            _sourceCopyright(),
+            _divider(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Divider _divider() {
+    return const Divider(
+      color: Colors.transparent,
+      height: 40.0,
+    );
+  }
+
+  Column _locationName() {
+    return Column(
+      children: const <Widget>[
+        Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            "Montereal, Quebec, CA",
+            style: TextStyle(fontSize: 32, color: Colors.white),
+          ),
+        ),
+        Text(
+          "Sunday, July 24, 2022",
+          style: TextStyle(fontSize: 16, color: Colors.white54),
+        )
+      ],
+    );
+  }
+
+  Row _searchBar() {
+    return Row(
+      children: const <Widget>[
+        Padding(
+          padding: EdgeInsets.only(left: 26.0, right: 16.0),
+          child: Icon(
+            Icons.search,
+            color: Colors.white60,
+          ),
+        ),
+        Text(
+          "Enter City Name",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white60,
+          ),
+        )
+      ],
+    );
+  }
+
+  Row _currentConditions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const Icon(
+          Icons.wb_sunny,
+          color: Colors.white,
+          size: 92.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Column(
+            children: const <Widget>[
+              Text(
+                "14F",
+                style: TextStyle(
+                  fontSize: 76.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w200,
+                ),
+              ),
+              Text(
+                "Light Snow",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Row _currentConditionDetails() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: const <Widget>[
+        _detailedCondition(),
+        _detailedCondition(),
+        _detailedCondition()
+      ],
+    );
+  }
+
+  Row _sourceCopyright() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "7-day weather forecast".toUpperCase(),
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+          ),
+        )
+      ],
+    );
+  }
 }
 
-class BodyListView extends StatelessWidget {
-  const BodyListView({Key? key}) : super(key: key);
+class _detailedCondition extends StatelessWidget {
+  const _detailedCondition({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return _myListView();
-  }
-
-  Widget _myListView() {
-    final List<ListItem> items = List<ListItem>.generate(
-      10000,
-      (index) => index % 6 == 0
-          ? HeadingItem('Heading $index')
-          : MessageItem('Sender $index', 'Message body $index'),
-    );
-
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-
-        if (item is HeadingItem) {
-          return ListTile(
-            title: Text(
-              item.heading,
-              style: Theme.of(context).textTheme.headline5,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const <Widget>[
+        Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
+          child: Icon(
+            Icons.sunny_snowing,
+            color: Colors.white,
+            size: 30.0,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 2.0),
+          child: Text(
+            "5",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24.0,
+              fontWeight: FontWeight.w500,
             ),
-          );
-        } else if (item is MessageItem) {
-          return ListTile(
-            title: Text(item.sender),
-            subtitle: Text(item.sender),
-            leading: const Icon(
-              Icons.insert_photo,
-              color: Colors.red,
-            ),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-          );
-        }
-
-        return const Text("something wrong");
-        // return Card(
-        //   child: ListTile(
-        //     title: Text(items[index]),
-        //     leading: const Icon(
-        //       Icons.insert_photo,
-        //       color: Colors.red,
-        //     ),
-        //     trailing: const Icon(Icons.keyboard_arrow_right),
-        //   ),
-        // );
-      },
+          ),
+        ),
+        Text(
+          "km/h",
+          style: TextStyle(
+              color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w300),
+        )
+      ],
     );
   }
-}
-
-abstract class ListItem {}
-
-class MessageItem implements ListItem {
-  final String sender;
-  final String body;
-  MessageItem(this.sender, this.body);
-}
-
-class HeadingItem implements ListItem {
-  final String heading;
-  HeadingItem(this.heading);
 }
